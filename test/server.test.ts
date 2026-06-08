@@ -46,3 +46,27 @@ test('rejects non-positive wpm', () => {
   assert.throws(() => count('x', 0));
   assert.throws(() => count('x', -10));
 });
+
+test('empty text reports zero reading time', () => {
+  assert.equal(count('').reading_time_display, '0 sec');
+  assert.equal(count('   \n  ').reading_time_display, '0 sec');
+});
+
+test('whole hours omit trailing zero minutes', () => {
+  // 200 wpm * 120 min = 24000 words -> exactly 2 hours
+  const r = count(new Array(24000).fill('w').join(' '));
+  assert.equal(r.reading_time_display, '2 hr');
+});
+
+test('hours include remaining minutes', () => {
+  // 200 wpm * 125 min = 25000 words -> 2 hr 5 min
+  const r = count(new Array(25000).fill('w').join(' '));
+  assert.equal(r.reading_time_display, '2 hr 5 min');
+});
+
+test('counts a single sentence with no trailing whitespace', () => {
+  const r = count('Just one sentence here.');
+  assert.equal(r.words, 4);
+  assert.equal(r.sentences, 1);
+  assert.equal(r.paragraphs, 1);
+});

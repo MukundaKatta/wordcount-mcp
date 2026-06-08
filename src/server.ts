@@ -44,13 +44,14 @@ export function count(text: string, wpm: number = 200): CountResult {
 }
 
 function displayTime(mins: number): string {
+  if (mins <= 0) return '0 sec';
   if (mins < 1) return Math.max(1, Math.round(mins * 60)) + ' sec';
   const m = Math.floor(mins);
   const s = Math.round((mins - m) * 60);
   if (m < 60) return s > 0 ? `${m} min ${s} sec` : `${m} min`;
   const h = Math.floor(m / 60);
   const rm = m % 60;
-  return `${h} hr ${rm} min`;
+  return rm > 0 ? `${h} hr ${rm} min` : `${h} hr`;
 }
 
 const server = new Server({ name: 'wordcount', version: VERSION }, { capabilities: { tools: {} } });
